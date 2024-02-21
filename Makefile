@@ -5,12 +5,10 @@ SRC=src
 SRCS=$(wildcard $(SRC)/*.c)
 OBJ=obj
 OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
-BINNAME=elasticc
-BIN=bin/$(BINNAME)
 
 TEST=test
 TESTS=$(wildcard $(TEST)/*.c)
-TESTBINS=$(patsubst $(TEST)/%.c, $(TEST)/bin/%, $(TESTS))
+TESTBINS=$(patsubst $(TEST)/%.c, $(TEST)/lib/%, $(TESTS))
 
 LIBNAME=esclient.a
 LIB=lib/$(LIBNAME)
@@ -21,11 +19,11 @@ $(BIN): $(OBJS)
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(TEST)/bin/%: $(TEST)/%.c
+$(TEST)/lib/%: $(TEST)/%.c
 	echo $@
 	$(CC) $(CFLAGS) $< $(OBJS) -o $@ -lcriterion
 
-$(TEST)/bin:
+$(TEST)/lib:
 	mkdir $@
 
 
@@ -34,9 +32,9 @@ $(LIB): $(OBJS)
 
 all: $(LIB)
 
-test: $(TEST)/bin $(TESTBINS)
+test: $(TEST)/lib $(TESTBINS)
 	for test in $(TESTBINS) ; do ./$$test ; done
 
 clean:
-	rm -r $(BIN) $(OBJ)/*.o
+	rm -r $(LIB) $(OBJ)/*.o
 	rm -r $(TEST)/bin/*
