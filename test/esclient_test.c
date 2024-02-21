@@ -1,5 +1,5 @@
 #include <criterion/criterion.h>
 
-Test(esclient, test1) {
+Test(esclient, init) {
 	cr_assert(1);
 }
