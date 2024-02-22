@@ -3,6 +3,7 @@ CFLAGS=-Wall -g
 
 SRC=src
 SRCS=$(wildcard $(SRC)/*.c)
+
 OBJ=obj
 OBJS=$(patsubst $(SRC)/%.c, $(OBJ)/%.o, $(SRCS))
 
@@ -12,6 +13,12 @@ TESTBINS=$(patsubst $(TEST)/%.c, $(TEST)/lib/%, $(TESTS))
 
 LIBNAME=esclient.a
 LIB=lib/$(LIBNAME)
+
+all: setup $(BIN) $(LIB) 
+
+setup: 
+	mkdir -p obj
+	mkdir -p lib
 
 $(BIN): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@
@@ -26,15 +33,15 @@ $(TEST)/lib/%: $(TEST)/%.c
 $(TEST)/lib:
 	mkdir $@
 
-
 $(LIB): $(OBJS)
 	ar rcs $@ $^
-
-all: $(LIB)
 
 test: $(TEST)/lib $(TESTBINS)
 	for test in $(TESTBINS) ; do ./$$test ; done
 
 clean:
 	rm -r $(LIB) $(OBJ)/*.o
-	rm -r $(TEST)/lib/*
+	rm -rf $(TEST)/lib
+	rm -rf lib/ obj/
+
+.PHONY: all test clean
