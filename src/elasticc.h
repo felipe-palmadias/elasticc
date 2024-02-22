@@ -7,6 +7,21 @@ typedef struct {
 } Cluster;
 
 
+
+/*
+ * Function: elasticc_init
+ * -----------------------
+ * Initializes the elasticc library.
+ * This function sets up any required resources and environment for using other functions in the library.
+ * It creates a data directory named ".elasticc" in the user's home directory if it doesn't already exist.
+ * 
+ * Return:
+ * 	- returns 0 indicating the initialization success.
+ * 	- returns non-zero value indicate failure.
+ */
+int elasticc_init();
+
+
 /*
  * Function: elasticc_add_cluster
  * ------------------------------
