@@ -3,3 +3,5 @@ obj/*
 lib/*
 test/bin/*
 test/lib/*
+test/*.swp
+src/*.swp

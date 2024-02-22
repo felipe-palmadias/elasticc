@@ -37,4 +37,4 @@ test: $(TEST)/lib $(TESTBINS)
 
 clean:
 	rm -r $(LIB) $(OBJ)/*.o
-	rm -r $(TEST)/bin/*
+	rm -r $(TEST)/lib/*
