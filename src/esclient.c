@@ -16,7 +16,7 @@ void esclient_init(char* base_url) {
 	strcpy(_esclient_base_url, base_url);
 }
 
-char* base_url() {
+char* esclient_base_url() {
 	return _esclient_base_url;
 }
 

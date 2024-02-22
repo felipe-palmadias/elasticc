@@ -14,5 +14,5 @@ void assert_string(const char *string, const char *criterion) {
 Test(esclient, init) {
 	esclient_init("a_base_url");
 
-	assert_string(base_url(), "a_base_url");
+	assert_string(esclient_base_url(), "a_base_url");
 }
