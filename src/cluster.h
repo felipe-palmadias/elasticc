@@ -8,6 +8,5 @@ typedef struct cluster_t {
 
 
 int cluster_insert(cluster_t *cluster);
-int cluster_exists_by_name(char *name);
 
 #endif

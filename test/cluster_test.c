@@ -24,9 +24,3 @@ Test(cluster, test_insert_cluster) {
 	cr_assert(result == 0);
 }
 
-Test(cluster, test_exists_by_name) {
-
-	int result = cluster_exists_by_name("cluster1");
-
-	cr_assert(result == 1);
-}
