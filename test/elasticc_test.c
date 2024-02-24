@@ -1,10 +1,12 @@
 #include <criterion/criterion.h>
+#include <criterion/parameterized.h>
 #include "../src/elasticc.h"
 #include "../src/util.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#define SMALL_STRING 32
 
 // fixture
 void assert_that_the_cluster_data_file_was_created() {
@@ -88,11 +90,17 @@ Test(elasticc, returns_error_when_uri_is_invalid) {
 	free(c);
 }
 
-Test(elasticc, adds_new_cluster) {
-	cluster_t *c = a_simple_cluster("valid_name", "http://test.com:8080");
+ParameterizedTestParameters(elasticc, adds_cluster) {
+    static char urls[3][SMALL_STRING] = { "http://test.com", "http://test.com:80", "https://test.com/path" };
+
+    return cr_make_param_array(char[SMALL_STRING], urls, sizeof (urls) / sizeof (char[SMALL_STRING]));
+}
+
+ParameterizedTest(char url[SMALL_STRING], elasticc, adds_cluster) {
+	cluster_t *c = a_simple_cluster("valid_name", url);
 
 	int result = elasticc_add_cluster(c);
-	
+
 	cr_assert(result == 0);
 
 	// finally
