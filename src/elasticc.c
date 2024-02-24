@@ -5,10 +5,14 @@
 #include <errno.h>
 #include <stdio.h>
 #include <sys/stat.h>
+#include <regex.h>
 
 // Error codes
 #define __ERR_ON_CREATE_FOLDER -1
 #define __ERR_ON_CREATE_DATA_FILE -1
+#define __ERR_NPE -1
+#define __ERR_INVALID_CLUSTER_NAME -3
+#define __ERR_INVALID_CLUSTER_URI -4
 
 // Constants
 #define __RESOURCE_FOLDER "/.elasticc"
@@ -84,7 +88,6 @@ int _create_resource_folder() {
  */
 int _try_create_cluster_data_file(char *file_path) {
 	FILE *fp;
-	printf("%s\n", file_path);
 	fp = fopen(file_path, "w");
 	if (fp) { 
 		fclose(fp);
@@ -146,22 +149,75 @@ int elasticc_init() {
 	return 0;
 }
 
+int _is_regex_match(char *pattern, char* str) {
+	regex_t regex;
+	regcomp(&regex, pattern, REG_EXTENDED);
+
+	int result = regexec(&regex, str, 0, NULL, 0);
+	regfree(&regex);
+
+	return !result;
+}
+
+/*
+ * Function: _is_valid_cluster_name
+ * --------------------------------
+ * Checks if the provided string is a valid cluster name.
+ * A valid cluster name contains only alphanumeric characters, hyphens, and underscores,
+ * and must be between 1 and 32 characters long.
+ *
+ * Return:
+ * 	- returns 1 if cluster name is valid
+ * 	- returns 0 if cluster name is invalid
+ */
+int _is_valid_cluster_name(char *name) {
+	char *pattern = "^[a-zA-Z0-9_-]{1,32}$";
+	return _is_regex_match(pattern, name);
+}
+
+/*
+ * Function: _is_valid_cluster_uri
+ * --------------------------------
+ * Checks if the provided string is a valid cluster uri.
+ * A valid cluster uri contains a valid elastic search uri access point.
+ *
+ * Return:
+ * 	- returns 1 if cluster uri is valid
+ * 	- returns 0 if cluster uri is invalid
+ */
+int _is_valid_cluster_uri(char *uri) {
+	char *pattern = "^(https?://)?[a-zA-Z0-9\\-\\.]+(:[0-9]+)?(/[a-zA-Z0-9\\-\\._\\?\\,\\'\\/\\\\\\+&amp;%\\$#\\=~]*)?$";
+	return _is_regex_match(pattern, uri);
+}
+
 /*
  * Function: elasticc_add_cluster
  * ------------------------------
  * Add new cluster to the list of clusters
  *
  * Parameters:
- * 	- cluster: A pointer to the Cluster struct representing de cluster to be added.
+ * 	- cluster: A pointer to the cluster_t struct representing de cluster to be added.
  *
  * Return:
- * 	- returns 0 if the cluster was successfully created.
- *  	- returns 1 if the cluster name already exists
- *  	- returns 2 if the cluster name is invalid.
- *  	- returns 3 if the cluster uri is invalid.
- *
+ * 	- returns 0 if the cluster was successfully created
+ * 	- returns -1 if cluster variable is NULL
+ *  	- returns -2 if the cluster name already exists
+ *  	- returns -3 if the cluster name is invalid
+ *  	- returns -4 if the cluster uri is invalid
  */
-int elasticc_add_cluster(cluster* cluster) {
+int elasticc_add_cluster(struct cluster_t *cluster) {
+	if (cluster == NULL) {
+		return __ERR_NPE;
+	}
+
+	if (!_is_valid_cluster_name(cluster->name)) {
+		return __ERR_INVALID_CLUSTER_NAME;
+	}
+
+	if (!_is_valid_cluster_uri(cluster->uri)) {
+		return __ERR_INVALID_CLUSTER_URI;
+	}
+
 	return 0;
 }
 
