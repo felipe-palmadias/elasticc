@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -g
+CFLAGS=-Wunused -Wall -g
 
 SRC=src
 SRCS=$(wildcard $(SRC)/*.c)
